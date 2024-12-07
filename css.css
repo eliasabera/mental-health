@@ -7,10 +7,14 @@
     margin: auto;
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     overflow: auto;
-    background: linear-gradient(315deg, #4f2991 3%, #7dc4ff 38%, #36cfcc 68%, #a92ed3 98%);
+    background: rgba(255, 255, 255, 0.8);
     animation: gradient 15s ease infinite;
     background-size: 400% 400%;
     background-attachment: fixed;
+}
+.mybox
+{
+  background-image: url('mind.jpg');
 }
 .stApp h1{
    font-family: sans-serif;
@@ -26,6 +30,7 @@
 }
 .eczjsme11{
 }
+
 .ea3mdgi5{
   transform: translateY(-100%)
   animation: myanime2 2s forwards;
@@ -51,6 +56,7 @@
  #welcome-to-the-mental-health-tracker{
     transform: translateX(10%);
  }
+
  @keyframes myanime2{
  to{
  transform: translateY(0);
@@ -63,4 +69,13 @@ to{
      transform: translateX(0);
      width: 0;
 }
+}
+.e10yg2by1{
+      background-color: #f5f5f5;  /* Light grey background */
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+      width: 80%;
+      margin: auto;  /* Center the form */
+      color: #333;  /* Dark text for readability */
 }

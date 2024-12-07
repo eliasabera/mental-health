@@ -2,6 +2,7 @@ import pandas as pd
 import datetime as dt
 import streamlit as st
 import plotly.graph_objects as go
+import base64
 
 from PIL import Image
 import joblib
@@ -72,85 +73,116 @@ with open('app.js') as f:
 
 st.markdown(f'<script>{app} </script>', unsafe_allow_html=True)
 # Main application
+import streamlit as st
+
+# Custom CSS for navigation
+with open('css.css') as f:
+    css = f.read()
+st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
+
+# Home Page
+def home_page():
+    st.title("Welcome to Mental Health Tracker")
+    st.write("Your journey to mental well-being starts here.")
+    st.image("mind.jpg", use_column_width=True)
+    st.write("Navigate to different sections using the links below.")
+    # Navigation Buttons
+
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    if st.button("Go to Well-being Tracker"):
+        st.session_state.current_page = "Well-being"
+
+with col2:
+    if st.button("Go to Academic Tracker"):
+        st.session_state.current_page = "Academic Tracker"
+
+with col3:
+    if st.button("Go to Journal"):
+        st.session_state.current_page = "Journal"
+
+# Well-being Page
+def wellbeing_page():
+    st.header("💫 Track Your Well-being 💫")
+    st.write("""
+             It's important to regularly monitor your mood, sleep hours, and coping strategies to maintain a good mental state.
+         """)
+
+    with st.form("Well-being Form"):
+        answer_list1, answer_list2 = get_user_input()
+        submit = st.form_submit_button("Submit Well-being Data")
+
+        if submit:
+            try:
+                create_table(answer_list1, answer_list2)
+                st.success("Your well-being data has been logged successfully!")
+            except Exception as e:
+                st.error(f"Error: {e}")
+
+# Academic Tracker Page
+def academic_tracker_page():
+    st.header("📚 Track Your Academic Progress 📚")
+    st.write("""
+               Keep track of your academic workload, productivity, and deadlines to stay organized and reduce stress.
+           """)
+
+    with st.form("Academic Tracker Form"):
+        answer_list1, answer_list2 = get_user_input()
+        submit = st.form_submit_button("Submit Academic Data")
+
+        if submit:
+            try:
+                create_table(answer_list1, answer_list2)
+                st.success("Academic data logged successfully!")
+            except Exception as e:
+                st.error(f"Error: {e}")
+# Journal Page
+def journal_page():
+    st.header("📝 Journal Your Thoughts 📝")
+    st.write("""
+                Writing down your thoughts can help you reflect on your day and track your emotional state over time.
+                This journal section will allow you to record your feelings and moods.
+            """)
+
+    with st.form("Journal Form"):
+        st.markdown(
+            "<div style='background-color: red;'>",
+            unsafe_allow_html=True
+        )
+        journal_entry = st.text_area("Write your journal entry here:", "")
+        entry_score = st.slider("Rate your sentiment (0-100):", 0, 100, 50)
+        submit = st.form_submit_button("Submit Journal Entry")
+
+        st.markdown("</div>", unsafe_allow_html=True)
+
+        if submit:
+            try:
+                now = dt.datetime.now()
+                date_string = now.strftime('%Y-%m-%d')
+
+                # Save the journal entry to the database
+                create_table([None, None, "None", 0, journal_entry, entry_score], [0, 0, 0, 0])
+                st.success("Your journal entry has been saved successfully!")
+            except Exception as e:
+                st.error(f"Error: {e}")
+
+# Main App Logic
 def main():
-    st.title(" Mental Health Tracker ")
-    st.sidebar.header("🌟 Menu 🌟")
+    # Initialize the current page
+    if "current_page" not in st.session_state:
+        st.session_state.current_page = "Home"
 
-    # Menu navigation options
-    menu = ["Home", "Well-being", "Academic Tracker", "Journal"]
-    choice = st.sidebar.selectbox("Choose a Section", menu)
-
-
-    if choice == "Home":
-
-        st.write("""" Breathe. Reflect. Grow: Your Journey to Mental Wellness.""")
-
-    elif choice == "Well-being":
-        st.header("💫 Track Your Well-being 💫")
-        st.write("""
-            It's important to regularly monitor your mood, sleep hours, and coping strategies to maintain a good mental state.
-        """)
-
-        with st.form("Well-being Form"):
-            answer_list1, answer_list2 = get_user_input()
-            submit = st.form_submit_button("Submit Well-being Data")
-
-            if submit:
-                try:
-                    create_table(answer_list1, answer_list2)
-                    st.success("Your well-being data has been logged successfully!")
-                except Exception as e:
-                    st.error(f"Error: {e}")
-
-    elif choice == "Academic Tracker":
-        st.header("📚 Track Your Academic Progress 📚")
-        st.write("""
-            Keep track of your academic workload, productivity, and deadlines to stay organized and reduce stress.
-        """)
-
-        with st.form("Academic Tracker Form"):
-            answer_list1, answer_list2 = get_user_input()
-            submit = st.form_submit_button("Submit Academic Data")
-
-            if submit:
-                try:
-                    create_table(answer_list1, answer_list2)
-                    st.success("Academic data logged successfully!")
-                except Exception as e:
-                    st.error(f"Error: {e}")
-
-    elif choice == "Journal":
-        st.header("📝 Journal Your Thoughts 📝")
-        st.write("""
-            Writing down your thoughts can help you reflect on your day and track your emotional state over time.
-            This journal section will allow you to record your feelings and moods.
-        """)
-
-        with st.form("Journal Form"):
-            st.markdown(
-                "<div style='background-color: red;'>",
-                unsafe_allow_html=True
-            )
-            journal_entry = st.text_area("Write your journal entry here:", "")
-            entry_score = st.slider("Rate your sentiment (0-100):", 0, 100, 50)
-            submit = st.form_submit_button("Submit Journal Entry")
-
-            st.markdown("</div>", unsafe_allow_html=True)
-
-            if submit:
-                try:
-                    now = dt.datetime.now()
-                    date_string = now.strftime('%Y-%m-%d')
-
-                    # Save the journal entry to the database
-                    create_table([None, None, "None", 0, journal_entry, entry_score], [0, 0, 0, 0])
-                    st.success("Your journal entry has been saved successfully!")
-                except Exception as e:
-                    st.error(f"Error: {e}")
-
-    # Button to visualize data
-
-
+    # Page Navigation Logic
+    if st.session_state.current_page == "Home":
+        home_page()
+    elif st.session_state.current_page == "Well-being":
+        wellbeing_page()
+    elif st.session_state.current_page == "Academic Tracker":
+        academic_tracker_page()
+    elif st.session_state.current_page == "Journal":
+        journal_page()
 
 # Run the app
 if __name__ == "__main__":
