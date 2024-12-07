@@ -12,6 +12,7 @@ import tensorflow as tf
 import re
 import pickle
 
+
 from sqlalchemy.testing.plugin.plugin_base import warnings
 
 import tracker_db
@@ -66,7 +67,10 @@ with open('css.css') as f:
 
 st.markdown(f'<style>{css} </style>', unsafe_allow_html=True)
 
+with open('app.js') as f:
+    app = f.read()
 
+st.markdown(f'<script>{app} </script>', unsafe_allow_html=True)
 # Main application
 def main():
     st.title(" Mental Health Tracker ")
@@ -76,13 +80,10 @@ def main():
     menu = ["Home", "Well-being", "Academic Tracker", "Journal"]
     choice = st.sidebar.selectbox("Choose a Section", menu)
 
+
     if choice == "Home":
-        st.header("Welcome to the Mental Health Tracker!")
-        st.write("""
-            This app helps you monitor your mental health, academic progress, and overall well-being. 
-            By regularly logging your emotions, activities, and challenges, you can gain insights into your mental state and make adjustments where necessary.
-        """)
-        st.image("https://via.placeholder.com/600x300.png?text=Mental+Health+Tracker", use_column_width=True)
+
+        st.write("""" Breathe. Reflect. Grow: Your Journey to Mental Wellness.""")
 
     elif choice == "Well-being":
         st.header("💫 Track Your Well-being 💫")
@@ -148,8 +149,7 @@ def main():
                     st.error(f"Error: {e}")
 
     # Button to visualize data
-    if st.button("🔍 Visualize Data 🔍"):
-        visualise_data()
+
 
 
 # Run the app
